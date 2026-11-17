@@ -1,0 +1,120 @@
+name: Check Notebook Cleanliness
+
+on:
+  pull_request:
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  verify-nbstripout:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+      
+      - name: Check for modified notebooks
+        id: filter
+        run: |
+          if git diff --name-only origin/${{ github.base_ref }}...HEAD | grep -q '\.ipynb$'; then
+            echo "notebooks=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "notebooks=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Set up Python
+        if: steps.filter.outputs.notebooks == 'true'
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+
+      - name: Install nbstripout
+        if: steps.filter.outputs.notebooks == 'true'
+        run: pip install nbstripout
+
+      - name: Verify notebooks are stripped
+        id: check-notebooks
+        if: steps.filter.outputs.notebooks == 'true'
+        run: |
+          NOTEBOOKS=$(find . -name "*.ipynb" -not -path "./.venv/*" -not -path "./venv/*")
+          if [ -z "$NOTEBOOKS" ]; then
+            echo "No notebooks found to check."
+            exit 0
+          fi
+          nbstripout --extra-keys="metadata.kernelspec metadata.language_info" $NOTEBOOKS
+          if ! git diff --exit-code; then
+            echo "::error::Unstripped notebooks detected! Run 'nbstripout --install && git config filter.nbstripout.extrakeys \"metadata.kernelspec metadata.language_info\"' locally, restage, and push."
+            exit 1
+          fi
+
+      - name: Comment on PR if check fails
+        if: failure() && steps.check-notebooks.outcome == 'failure'
+        uses: actions/github-script@v8
+        with:
+          script: |
+            const marker = '<!-- nbstripout-check-warning -->';
+            const baseBranch = context.payload.pull_request.base.ref;
+            const repoUrl = `${context.serverUrl}/${context.repo.owner}/${context.repo.repo}`;
+            const readmeUrl = `${repoUrl}/blob/${baseBranch}/README.md#setup-environment-collaborators`;
+            const body = `${marker}
+            ### Warning: Commits contain dirty \`.ipynb\`
+
+            This PR contains commits involving \`.ipynb\` files with unstripped cell outputs and metadata. These become diff noise and may cause merge conflicts.
+            
+            #### How to fix:
+            If you haven't already set up your environment: See [README](${readmeUrl}).
+            
+            Then re-stage, commit, and push:
+              \`\`\`bash
+              git add --renormalize .
+              git commit -m "fix: strip notebook outputs and metadata"
+              git push
+              \`\`\`
+            `;
+
+            const { data: comments } = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+            });
+
+            const existing = comments.find(c => c.body.includes(marker));
+            if (existing) {
+              await github.rest.issues.updateComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: existing.id,
+                body,
+              });
+            } else {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                body,
+              });
+            }
+
+      - name: Resolve PR warning comment when check passes
+        if: success() && steps.filter.outputs.notebooks == 'true'
+        uses: actions/github-script@v8
+        with:
+          script: |
+            const marker = '<!-- nbstripout-check-warning -->';
+            const { data: comments } = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+            });
+
+            const existing = comments.find(c => c.body.includes(marker));
+            if (existing) {
+              await github.rest.issues.updateComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: existing.id,
+                body: `${marker}\n **Resolved:** \`.ipynb\` commits are clean!`,
+              });
+            }
