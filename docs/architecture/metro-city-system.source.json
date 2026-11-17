@@ -1,0 +1,568 @@
+{
+  "schema_version": 1,
+  "diagram_type": "architecture",
+  "meta": {
+    "title": "Metro City Emergency Dispatch — Notebook System Architecture",
+    "output": ".archify/architecture-metro-city-system-20261117-164826/metro-city-system.html",
+    "quality_profile": "showcase",
+    "locale": "en",
+    "repository": {
+      "url": "https://github.com/renz0826/Autonomous-Urban-Emergency-Dispatch-Routing-System.git",
+      "provider": "github",
+      "link_mode": "web",
+      "revision": "bbfb2999f6f1a44bf48cef10f2cc3fff6d4cd99f"
+    },
+    "legend": {
+      "mode": "auto",
+      "entries": {
+        "database": {
+          "label": "Environment state store"
+        },
+        "security": {
+          "label": "Safety rule engine"
+        },
+        "frontend": {
+          "label": "Visualization"
+        },
+        "external": {
+          "label": "Actor / pinned library"
+        }
+      }
+    },
+    "views": [
+      {
+        "id": "dispatch-core",
+        "label": "Dispatch core",
+        "focus": [
+          "dispatch",
+          "env",
+          "graph-state",
+          "hub-hazards"
+        ],
+        "note": "The implemented MetroCityEnvironment and its state stores."
+      },
+      {
+        "id": "module-slots",
+        "label": "Planned AI modules",
+        "focus": [
+          "route-planner",
+          "hub-optimizer",
+          "safety-engine"
+        ],
+        "note": "Four AI paradigms pending as GitHub-issue-backed notebook slots."
+      },
+      {
+        "id": "tooling",
+        "label": "Repo tooling",
+        "focus": [
+          "notebook",
+          "ci-gate",
+          "networkx",
+          "numpy",
+          "matplotlib"
+        ],
+        "note": "Single-notebook artifact, nbstripout CI gate, and pinned libraries."
+      }
+    ]
+  },
+  "components": [
+    {
+      "id": "dispatch",
+      "type": "external",
+      "label": "Dispatch Team",
+      "sublabel": "Analyst running notebook",
+      "icon": "person",
+      "pos": [
+        30,
+        182
+      ],
+      "size": [
+        150,
+        60
+      ]
+    },
+    {
+      "id": "graph-state",
+      "type": "database",
+      "label": "Road Graph State",
+      "sublabel": "DiGrid attrs · weights",
+      "pos": [
+        360,
+        150
+      ],
+      "size": [
+        100,
+        60
+      ],
+      "sources": [
+        {
+          "path": "CCS 246_Final_Project_Doc_Asoy_Bedonia_Buenavista_Fabros_Panganiban.ipynb",
+          "line": 96,
+          "end_line": 121,
+          "label": "grid + edge attrs init"
+        }
+      ]
+    },
+    {
+      "id": "hub-hazards",
+      "type": "database",
+      "label": "Hotspots & Hubs",
+      "sublabel": "hotspots · K hubs",
+      "pos": [
+        746,
+        80
+      ],
+      "size": [
+        140,
+        60
+      ],
+      "sources": [
+        {
+          "path": "CCS 246_Final_Project_Doc_Asoy_Bedonia_Buenavista_Fabros_Panganiban.ipynb",
+          "line": 132,
+          "end_line": 152,
+          "label": "generate_hotspots"
+        },
+        {
+          "path": "CCS 246_Final_Project_Doc_Asoy_Bedonia_Buenavista_Fabros_Panganiban.ipynb",
+          "line": 153,
+          "end_line": 161,
+          "label": "initialize_hubs"
+        }
+      ]
+    },
+    {
+      "id": "env",
+      "type": "backend",
+      "label": "MetroCityEnvironment",
+      "sublabel": "NetworkX 50×50 dispatch model",
+      "tag": "IMPLEMENTED",
+      "pos": [
+        520,
+        200
+      ],
+      "size": [
+        276,
+        80
+      ],
+      "sources": [
+        {
+          "path": "CCS 246_Final_Project_Doc_Asoy_Bedonia_Buenavista_Fabros_Panganiban.ipynb",
+          "line": 70,
+          "end_line": 96,
+          "label": "class + graph build"
+        },
+        {
+          "path": "CCS 246_Final_Project_Doc_Asoy_Bedonia_Buenavista_Fabros_Panganiban.ipynb",
+          "line": 162,
+          "end_line": 191,
+          "label": "congestion + hazard injection"
+        },
+        {
+          "path": "CCS 246_Final_Project_Doc_Asoy_Bedonia_Buenavista_Fabros_Panganiban.ipynb",
+          "line": 192,
+          "end_line": 197,
+          "label": "Manhattan heuristic h₁"
+        }
+      ]
+    },
+    {
+      "id": "visualizer",
+      "type": "frontend",
+      "label": "Map Visualizer",
+      "sublabel": "render_metro_city_graph",
+      "tag": "IMPLEMENTED",
+      "icon": "frontend",
+      "pos": [
+        820,
+        210
+      ],
+      "size": [
+        170,
+        80
+      ],
+      "sources": [
+        {
+          "path": "CCS 246_Final_Project_Doc_Asoy_Bedonia_Buenavista_Fabros_Panganiban.ipynb",
+          "line": 306,
+          "end_line": 340,
+          "label": "render_metro_city_graph"
+        },
+        {
+          "path": "CCS 246_Final_Project_Doc_Asoy_Bedonia_Buenavista_Fabros_Panganiban.ipynb",
+          "line": 198,
+          "end_line": 275,
+          "label": "visualize_environment"
+        }
+      ]
+    },
+    {
+      "id": "route-planner",
+      "type": "backend",
+      "label": "Module 1 · A* Route Planner",
+      "sublabel": "Dynamic route planning",
+      "tag": "IN PROGRESS · issue #1",
+      "icon": "flag",
+      "pos": [
+        200,
+        330
+      ],
+      "size": [
+        180,
+        80
+      ],
+      "sources": [
+        {
+          "path": "CCS 246_Final_Project_Doc_Asoy_Bedonia_Buenavista_Fabros_Panganiban.ipynb",
+          "line": 435,
+          "end_line": 445,
+          "label": "Module 1 placeholder cell"
+        }
+      ]
+    },
+    {
+      "id": "safety-engine",
+      "type": "security",
+      "label": "Module 4 · Safety Engine",
+      "sublabel": "Flood-depth rule checks",
+      "tag": "PLANNED",
+      "pos": [
+        620,
+        340
+      ],
+      "size": [
+        180,
+        80
+      ],
+      "sources": [
+        {
+          "path": "CCS 246_Final_Project_Doc_Asoy_Bedonia_Buenavista_Fabros_Panganiban.ipynb",
+          "line": 492,
+          "end_line": 502,
+          "label": "Module 4 placeholder cell"
+        }
+      ]
+    },
+    {
+      "id": "hub-optimizer",
+      "type": "backend",
+      "label": "Module 2 · Hub Optimizer",
+      "sublabel": "Hub location optimization",
+      "tag": "PLANNED",
+      "pos": [
+        340,
+        420
+      ],
+      "size": [
+        180,
+        60
+      ],
+      "sources": [
+        {
+          "path": "CCS 246_Final_Project_Doc_Asoy_Bedonia_Buenavista_Fabros_Panganiban.ipynb",
+          "line": 454,
+          "end_line": 464,
+          "label": "Module 2 placeholder cell"
+        }
+      ]
+    },
+    {
+      "id": "notebook",
+      "type": "backend",
+      "label": "Project Notebook",
+      "sublabel": "single .ipynb artifact",
+      "pos": [
+        420,
+        570
+      ],
+      "size": [
+        180,
+        60
+      ],
+      "sources": [
+        {
+          "path": "CCS 246_Final_Project_Doc_Asoy_Bedonia_Buenavista_Fabros_Panganiban.ipynb",
+          "line": 1,
+          "end_line": 8,
+          "label": "project objectives header"
+        }
+      ]
+    },
+    {
+      "id": "ci-gate",
+      "type": "security",
+      "label": "CI Notebook Gate",
+      "sublabel": "nbstripout cleanliness",
+      "pos": [
+        700,
+        430
+      ],
+      "size": [
+        180,
+        60
+      ],
+      "sources": [
+        {
+          "path": ".github/workflows/check-notebooks.yml",
+          "line": 40,
+          "end_line": 50,
+          "label": "verify stripped notebooks"
+        }
+      ]
+    },
+    {
+      "id": "numpy",
+      "type": "external",
+      "label": "numpy 2.5.4",
+      "sublabel": "seeding · congestion",
+      "icon": "external",
+      "pos": [
+        200,
+        700
+      ],
+      "size": [
+        150,
+        56
+      ],
+      "sources": [
+        {
+          "path": "requirements.txt",
+          "line": 26,
+          "end_line": 26,
+          "label": "numpy pin"
+        }
+      ]
+    },
+    {
+      "id": "networkx",
+      "type": "external",
+      "label": "networkx 3.7",
+      "sublabel": "DiGraph grid",
+      "icon": "external",
+      "pos": [
+        500,
+        700
+      ],
+      "size": [
+        160,
+        56
+      ],
+      "sources": [
+        {
+          "path": "requirements.txt",
+          "line": 25,
+          "end_line": 25,
+          "label": "networkx pin"
+        }
+      ]
+    },
+    {
+      "id": "matplotlib",
+      "type": "external",
+      "label": "matplotlib 3.11.2",
+      "sublabel": "plot backend",
+      "icon": "external",
+      "pos": [
+        820,
+        700
+      ],
+      "size": [
+        160,
+        56
+      ],
+      "sources": [
+        {
+          "path": "requirements.txt",
+          "line": 20,
+          "end_line": 20,
+          "label": "matplotlib pin"
+        }
+      ]
+    }
+  ],
+  "boundaries": [
+    {
+      "kind": "region",
+      "label": "Repo: CCS 246 notebook project",
+      "wraps": [
+        "env",
+        "graph-state",
+        "hub-hazards",
+        "route-planner",
+        "hub-optimizer",
+        "safety-engine",
+        "visualizer",
+        "notebook"
+      ]
+    }
+  ],
+  "connections": [
+    {
+      "id": "dispatch-to-graph",
+      "from": "dispatch",
+      "to": "graph-state",
+      "label": "incidents",
+      "labelAt": [
+        276,
+        128
+      ]
+    },
+    {
+      "id": "dispatch-to-env",
+      "from": "dispatch",
+      "to": "env",
+      "label": "dispatch · run cells",
+      "variant": "emphasis",
+      "labelAt": [
+        240,
+        232
+      ]
+    },
+    {
+      "id": "graph-to-env",
+      "from": "graph-state",
+      "to": "env",
+      "label": "node + edge state",
+      "labelAt": [
+        490,
+        120
+      ]
+    },
+    {
+      "id": "hub-to-env",
+      "from": "hub-hazards",
+      "to": "env",
+      "label": "hotspots · hubs",
+      "labelAt": [
+        796,
+        168
+      ]
+    },
+    {
+      "id": "graph-to-planner",
+      "from": "graph-state",
+      "to": "route-planner",
+      "label": "weighted edges",
+      "variant": "dashed",
+      "labelAt": [
+        394,
+        268
+      ]
+    },
+    {
+      "id": "safety-to-env",
+      "from": "safety-engine",
+      "to": "env",
+      "label": "traversal veto (planned)",
+      "variant": "security",
+      "labelAt": [
+        760,
+        190
+      ]
+    },
+    {
+      "id": "optimizer-to-env",
+      "from": "hub-optimizer",
+      "to": "env",
+      "label": "relocate hubs (planned)",
+      "variant": "dashed",
+      "labelAt": [
+        460,
+        402
+      ]
+    },
+    {
+      "id": "env-to-visualizer",
+      "from": "env",
+      "to": "visualizer",
+      "label": "grid state",
+      "labelAt": [
+        622,
+        196
+      ]
+    },
+    {
+      "id": "planner-to-visualizer",
+      "from": "route-planner",
+      "to": "visualizer",
+      "label": "route overlay (planned)",
+      "variant": "emphasis",
+      "labelAt": [
+        800,
+        336
+      ]
+    },
+    {
+      "id": "notebook-to-ci",
+      "from": "notebook",
+      "to": "ci-gate",
+      "variant": "security",
+      "labelAt": [
+        610,
+        568
+      ]
+    },
+    {
+      "id": "env-to-numpy",
+      "from": "env",
+      "to": "numpy",
+      "label": "seed · congestion",
+      "labelAt": [
+        360,
+        560
+      ]
+    },
+    {
+      "id": "env-to-networkx",
+      "from": "env",
+      "to": "networkx",
+      "label": "build · mutate DiGraph",
+      "labelAt": [
+        560,
+        520
+      ]
+    },
+    {
+      "id": "visualizer-to-matplotlib",
+      "from": "visualizer",
+      "to": "matplotlib",
+      "label": "render grid",
+      "labelAt": [
+        900,
+        664
+      ]
+    }
+  ],
+  "cards": [
+    {
+      "dot": "amber",
+      "title": "Road traversal costs",
+      "items": [
+        "Clear road edge: weight = base_cost × 1 = 1",
+        "Congested edge: congestion_factor ∈ [3.0, 8.0] injected on ~15% of edges",
+        "Flooded cell: in/out edges blocked with weight = ∞ (impassable)",
+        "Heuristic h₁(n): Manhattan distance, admissible because min edge cost is 1",
+        "Module 2 hub optimization reads hotspot priorities wᵢ via the environment stores"
+      ]
+    },
+    {
+      "dot": "cyan",
+      "title": "Module slots (GitHub issues)",
+      "items": [
+        "Module 1 A* route planning — issue #1, in progress on feat/module-1-dynamic-route-planning",
+        "Module 3 adversarial hazard navigation — placeholder cell (notebook lines 473–483)",
+        "Module 4 reads flood_depth_m per cell, vetoes traversal so ∞ edges stay out of routes",
+        "End-to-End simulation cell stays empty until all modules land"
+      ]
+    },
+    {
+      "dot": "rose",
+      "title": "Repo hygiene",
+      "items": [
+        "All logic lives in one committed notebook artifact",
+        "nbstripout git filter drops outputs + kernelspec/language_info metadata",
+        "CI fails PRs whose committed notebooks carry outputs or metadata"
+      ]
+    }
+  ]
+}

@@ -28,3 +28,4 @@ Static preview of the notebook-system architecture (dark/light themes, zoom, exp
 
 - Interactive explorable diagram: [docs/architecture/metro-city-system.html](docs/architecture/metro-city-system.html) — GitHub's file view shows its source, so open it locally (`open docs/architecture/metro-city-system.html`) for the real interactive canvas.
 - Once GitHub Pages is enabled (source: `main` → `/docs` folder), the interactive diagram is reachable at: https://renz0826.github.io/Autonomous-Urban-Emergency-Dispatch-Routing-System/architecture/metro-city-system.html
+- Regenerate the diagram after editing its spec: [docs/architecture/metro-city-system.source.json](docs/architecture/metro-city-system.source.json) is the archify candidate (nodes, edges, cards, views). With the archify CLI installed: `archify render architecture docs/architecture/metro-city-system.source.json docs/architecture/metro-city-system.html --repo-root . --quality showcase`.

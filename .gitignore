@@ -10,3 +10,6 @@ venv/
 ENV/
 env.bak/
 venv.bak/
+
+# Diagram build/verification scratch (committed outputs live in docs/architecture/)
+.archify/
