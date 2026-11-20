@@ -38,12 +38,12 @@ jobs:
         id: check-notebooks
         if: steps.filter.outputs.notebooks == 'true'
         run: |
-          NOTEBOOKS=$(find . -name "*.ipynb" -not -path "./.venv/*" -not -path "./venv/*")
-          if [ -z "$NOTEBOOKS" ]; then
+          COUNT=$(find . -name "*.ipynb" -not -path "./.venv/*" -not -path "./venv/*" -print | wc -l)
+          if [ "$COUNT" -eq 0 ]; then
             echo "No notebooks found to check."
             exit 0
           fi
-          nbstripout --extra-keys="metadata.kernelspec metadata.language_info" $NOTEBOOKS
+          find . -name "*.ipynb" -not -path "./.venv/*" -not -path "./venv/*" -print0 | xargs -0 nbstripout --extra-keys="metadata.kernelspec metadata.language_info"
           if ! git diff --exit-code; then
             echo "::error::Unstripped notebooks detected! Run 'nbstripout --install && git config filter.nbstripout.extrakeys \"metadata.kernelspec metadata.language_info\"' locally, restage, and push."
             exit 1
