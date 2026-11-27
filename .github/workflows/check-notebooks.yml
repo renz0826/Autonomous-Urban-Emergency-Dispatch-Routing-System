@@ -9,14 +9,23 @@ permissions:
 
 jobs:
   verify-nbstripout:
-    runs-on: ubuntu-latest
+    name: verify-nbstripout (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os:
+          - ubuntu-latest
+          - windows-latest
+          - macos-latest
     steps:
       - uses: actions/checkout@v6
         with:
           fetch-depth: 0
-      
+
       - name: Check for modified notebooks
         id: filter
+        shell: bash
         run: |
           if git diff --name-only origin/${{ github.base_ref }}...HEAD | grep -q '\.ipynb$'; then
             echo "notebooks=true" >> "$GITHUB_OUTPUT"
@@ -32,11 +41,13 @@ jobs:
 
       - name: Install nbstripout
         if: steps.filter.outputs.notebooks == 'true'
+        shell: bash
         run: pip install nbstripout
 
       - name: Verify notebooks are stripped
         id: check-notebooks
         if: steps.filter.outputs.notebooks == 'true'
+        shell: bash
         run: |
           NOTEBOOKS=$(find . -name "*.ipynb" -not -path "./.venv/*" -not -path "./venv/*")
           if [ -z "$NOTEBOOKS" ]; then
